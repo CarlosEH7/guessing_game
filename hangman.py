@@ -1,58 +1,54 @@
 import random
-from collections import Counter
 
-someWords = ['CLEVER','TRICKY','INNOCENT','ABSOLUTE','INSANITY','WEIRD','FUNNIEST']
+someWords = ['CLEVER', 'TRICKY', 'INNOCENT', 'ABSOLUTE', 'INSANITY', 'WEIRD', 'FUNNIEST']
 
-word = random.choice(someWords)
+word = random.choice(someWords).upper()
+letterGuessed = set()
+chances = len(word) + 2
 
-if __name__ == '__main__':
-    print('Guess the word!')
+print('Guess the word!')
+print('_ ' * len(word))
 
-    print('_ ' * len(word))
+try:
+    while chances > 0:
+        print()
+        guess = input('Enter a letter to guess: ').upper()
 
-    playing = True
-    letterGuessed = ''
-    chances = len(word) + 2
-    correct = 0
-    flag = 0
-    try:
-        while (chances != 0) and flag == 0:
-            print()
+        if not guess.isalpha():
+            print('Enter only a Letter!!')
+            continue
+        if len(guess) > 1:
+            print('Enter ONLY 1 LETTER')
+            continue
+        if guess in letterGuessed:
+            print('You have already guessed that letter')
+            continue
+
+        letterGuessed.add(guess)
+
+        if guess in word:
+            print('Correct!')
+        else:
             chances -= 1
-            try: guess = str(input('Enter a letter to guess: '))
-            except:
-                print('Enter only 1 letter!')
-                continue
-            if not guess.isalpha():
-                print('Enter only a Letter!!')
-                continue
-            elif len(guess) > 1:
-                print('ONLY 1 LETTER')
-                continue
-            elif guess in letterGuessed:
-                print('You have already guessed that letter')
-                continue
-            if guess in word:
-                k = word.count(guess)
-                for _ in range(k):
-                    letterGuessed += guess
+            print(f'Wrong! {chances} chances left.')
 
-            for char in word:
-                if char in letterGuessed and (Counter(letterGuessed) != Counter(word)):
-                    print(char, end=" ")
-                    correct += 1
-                elif (Counter(letterGuessed) == Counter(word)):
-                    print("The word is: ", word)
-                    flag = 1
-                    print('Congrats, you won!')
-                    break
-                    break
-                else:
-                    print('_', end=' ')
-            if chances <= 0 and (Counter(letterGuessed) != Counter(word)):
-                print('You suck')
-                print('Try again')
-    except KeyboardInterrupt:
-            print()
-            print('Bye')
-            exit()
+        display = ''
+        for char in word:
+            if char in letterGuessed:
+                display += char + ' '
+            else:
+                display += '_ '
+
+        print(display)
+
+        if all([char in letterGuessed for char in word]):
+            print('Congratulations, you won! The word was', word)
+            break
+
+    if chances == 0:
+        print('Sorry, you lose. The word was', word)
+
+except KeyboardInterrupt:
+    print()
+    print('Bye')
+    exit()
