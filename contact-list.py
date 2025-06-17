@@ -14,6 +14,9 @@ def add_person():
     name = input("What is the name of the person you would like to add: ")
     if name.lower() == "quit":
         return False
+    if name in contacts:
+        print("This contact already exists.")
+        return True
 
     number = input("What is the phone number of the person you would like to add: ")
     if number.lower() == "quit":
@@ -33,7 +36,9 @@ def remove_person():
     name = input("What person would you like to delete from your contact list?: ")
     if name.lower() == "quit":
         return False
-
+    confirm = input(f"Are you sure you want to delete {name}? (yes/no): ").strip().lower()
+    if confirm != "yes":
+        return False
     if name in contacts:
         del contacts[name]
         print(f"{name} removed")
@@ -89,19 +94,32 @@ def phone_book():
     print("-" * 20)
     return True
 
+def search_contact():
+    query = input("Enter name to search for: ").strip().lower()
+    matches ={name: number for name, number in contacts.items() if query in name.lower() }
+
+    if matches:
+        print("Matches found: ")
+        for name, number in matches.items():
+            print(f"{name:<10}: {number}")
+    else:
+        print("No contacts matched your search.")
+    return True
+
 
 while True:
-    print("1. Add a person")
-    print("2. Remove a person")
+    print("1. Add contact")
+    print("2. Remove contact")
     print("3. View phone book")
     print("4. Update contact")
-    print("5. Quit")
+    print("5. Search for contact")
+    print("6. Quit")
     choice = input()
     choice = choice.strip().lower()
-    if choice in ("1", "add a person"):
+    if choice in ("1", "add contact"):
         add_person()
         
-    elif choice in ("2", "remove a person"):
+    elif choice in ("2", "remove contact"):
         remove_person()
         
     elif choice in ("3", "view phone book"):
@@ -109,7 +127,9 @@ while True:
         print("\n")
     elif choice in ("4", "update contact"):
         edit_person()
-    elif choice in ("5", "quit"):
+    elif choice in ("5", "search for contact"):
+        search_contact()
+    elif choice in ("6", "quit"):
         print("Saving contacts and quitting...")
         save_contacts()
         break
